@@ -1,0 +1,82 @@
+{
+  "name": "opencode-tool-templates",
+  "version": "0.1.0",
+  "description": "OpenCode V2 plugin that renders Handlebars templates into another tool's arguments, calls that tool, and assembles template objects into text or files.",
+  "author": "Maxim Matsiushonak",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "docs/*.md"
+  ],
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "opencode-v2",
+    "opencode-v2-plugin",
+    "agent-tools",
+    "template",
+    "handlebars",
+    "prompt-template",
+    "tool-call",
+    "tool-templates",
+    "subagent",
+    "orchestration"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finnseefly/opencode-tool-templates.git"
+  },
+  "homepage": "https://github.com/finnseefly/opencode-tool-templates#readme",
+  "bugs": {
+    "url": "https://github.com/finnseefly/opencode-tool-templates/issues"
+  },
+  "scripts": {
+    "lint": "oxlint",
+    "format": "prettier --ignore-unknown --write .",
+    "format:check": "prettier --ignore-unknown --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "check": "bun run lint && bun run format:check && bun run typecheck && bun test",
+    "prepublishOnly": "bun run check"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.10",
+    "picomatch": "^4.0.7"
+  },
+  "peerDependencies": {
+    "@opencode/plugin": "^2.3.2",
+    "effect": "^4.0.6"
+  },
+  "peerDependenciesMeta": {
+    "@opencode/plugin": {
+      "optional": true
+    },
+    "effect": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@opencode/plugin": "^2.3.2",
+    "@types/bun": "^1.4.3",
+    "@types/node": "^26.6.5",
+    "@types/picomatch": "^4.0.3",
+    "effect": "^4.0.6",
+    "oxlint": "1.60.0",
+    "prettier": "3.6.2",
+    "typescript": "^7.0.2"
+  },
+  "prettier": {
+    "semi": true,
+    "printWidth": 90
+  }
+}
