@@ -14,6 +14,7 @@ import {
   mkdir,
   readFile,
   realpath,
+  rename,
   rm,
   symlink,
   unlink,
@@ -480,11 +481,18 @@ describe("template paths", () => {
   it("rejects a regular file replaced during the read permission prompt", async () => {
     const project = await tempDir();
     const task = await writeTemp(project, "templates/task.md", "safe");
+    // Create the replacement before unlinking so the new file cannot reuse the
+    // original inode.
+    const replacement = await writeTemp(
+      project,
+      "templates/replacement.md",
+      "SWAPPED-SECRET",
+    );
     const guard = createPermissionGuard({
       assert: async (input) => {
         if (input.action !== "read") return;
         await unlink(task);
-        await writeFile(task, "SWAPPED-SECRET", "utf8");
+        await rename(replacement, task);
       },
     });
     const { paths } = await setupPaths(project);
@@ -1153,7 +1161,9 @@ describe("template writes", () => {
       if (code === "EPERM" || code === "EACCES") return;
       throw error;
     }
-    const { paths, guard } = await setupPaths(directory);
+    const { paths, guard } = await setupPaths(directory, {
+      buildPaths: ["build/**/*"],
+    });
 
     for (const overwrite of [false, true]) {
       await expect(
@@ -1296,11 +1306,14 @@ describe("template writes", () => {
   it("rejects a regular file replaced during the overwrite permission prompt", async () => {
     const project = await tempDir();
     const target = await writeTemp(project, "build/out.txt", "old");
+    // Create the replacement before unlinking so the new file cannot reuse the
+    // original inode.
+    const replacement = await writeTemp(project, "build/replacement.txt", "replaced");
     const guard = createPermissionGuard({
       assert: async (input) => {
         if (input.action !== "edit") return;
         await unlink(target);
-        await writeFile(target, "replaced", "utf8");
+        await rename(replacement, target);
       },
     });
     const { paths } = await setupPaths(project);
